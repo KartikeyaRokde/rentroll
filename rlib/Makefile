@@ -7,10 +7,11 @@ rrlib: *.go
 
 test:
 	go test
-	@echo "*** TESTS COMPLETE -- ALL TESTS PASS ***"
+	@echo "\t*** TEST completed in rrlib -- ALL TESTS PASS ***"
 
 clean:
 	go clean
+	@echo "\t*** CLEAN completed in rrlib ***"
 
 package:
-	@echo "*** PACKAGE completed in rlib ***"
+	@echo "\t*** PACKAGE completed in rlib ***"

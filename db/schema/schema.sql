@@ -32,10 +32,11 @@
 -- USERID = User id
 
 DROP DATABASE IF EXISTS rentroll;
+CREATE USER IF NOT EXISTS '{{rrdbuser}}'@'{{rrdbhost}}';
 CREATE DATABASE rentroll;
 USE rentroll;
-GRANT ALL PRIVILEGES ON rentroll TO 'ec2-user'@'localhost';
-GRANT ALL PRIVILEGES ON rentroll.* TO 'ec2-user'@'localhost';
+GRANT ALL PRIVILEGES ON rentroll TO '{{rrdbuser}}'@'{{rrdbhost}}';
+GRANT ALL PRIVILEGES ON rentroll.* TO '{{rrdbuser}}'@'{{rrdbhost}}';
 SET GLOBAL sql_mode='';
 
 -- ===========================================

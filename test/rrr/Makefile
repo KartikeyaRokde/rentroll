@@ -2,7 +2,7 @@ all:
 	@echo "*** Completed in rrr ***"
 
 clean:
-	rm -f rentroll.log log llog ll.g err.txt [a-z] [a-z][a-z1-9] qq?
+	rm -f rentroll.log log llog ll.g err.txt [a-z] [a-z][a-z1-9] qq? conf.json
 	@echo "*** CLEAN completed in rrr ***"
 
 test:

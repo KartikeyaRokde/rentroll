@@ -6,6 +6,7 @@ DATABASE="rentroll"
 MYSQLOPTS=""
 UNAME=$(uname)
 
+source ../../confreader.sh
 
 if [ "${UNAME}" == "Darwin" -o "${IAMJENKINS}" == "jenkins" ]; then
 	MYSQLOPTS="--no-defaults"
@@ -50,7 +51,8 @@ ZZEOF
 ##############################################################
 newdb() {
 	pushd ${DIR}
-	mysql ${MYSQLOPTS} <schema.sql
+	echo -e "\tEntering directory ${DIR}"
+	mysql -h "$dbhost" -u "$dbuser" "-p$dbpass" "$dbname" <schema.sql
 	popd
 }
 
@@ -74,6 +76,6 @@ while getopts ":hN:" o; do
 done
 shift $((OPTIND-1))
 
-echo "Creating new database ${DATABASE}..."
+echo -e "\n\n *** SQL >> Creating new database ${DATABASE}... ***"
 newdb
 echo "Done."

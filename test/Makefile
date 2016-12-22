@@ -2,10 +2,11 @@ DIRS = setup newbiz rrr rr1 jm1 notes ccc upd
 
 db:
 	for dir in $(DIRS); do make -C $$dir;done
+	for dir in $(DIRS); do cp conf.json $$dir/conf.json;done
 	@echo "*** MAKE completed in test ***"
 
 clean:
-	rm -f testreport.txt
+	rm -f testreport.txt conf.json
 	for dir in $(DIRS); do make -C $$dir clean;done
 	@echo "*** CLEAN completed in test ***"
 	

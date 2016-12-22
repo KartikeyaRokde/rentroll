@@ -5,11 +5,12 @@ db:
 
 clean:
 	for dir in $(DIRS); do make -C $$dir clean;done
+	@echo "\t*** CLEAN completed in db ***"
 
 test:
 	for dir in $(DIRS); do make -C $$dir test;done
-	@echo "*** TEST completed in db ***"
+	@echo "\t*** TEST completed in db ***"
 
 package:
 	for dir in $(DIRS); do make -C $$dir package;done
-	@echo "*** PACKAGE completed in db/schema ***"
+	@echo "\t*** PACKAGE completed in db/schema ***"

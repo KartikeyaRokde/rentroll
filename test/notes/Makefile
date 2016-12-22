@@ -6,7 +6,7 @@ notes: *.go
 	@echo "*** Completed in Notes ***"
 
 clean:
-	rm -f notes.log log notes [a-z]
+	rm -f notes.log log notes [a-z] conf.json
 	@echo "*** CLEAN completed in Notes ***"
 
 test:	notes

@@ -5,6 +5,7 @@
     "Dbhost": "localhost",
     "Dbport": 8250,
     "Dbtype": "mysql",
+	"RRDbname": "accord",
 	"RRDbuser": "ec2-user",
 	"RRDbpass": "",
 	"RRDbhost": "localhost",

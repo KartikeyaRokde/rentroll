@@ -2,7 +2,7 @@ engine:
 	@echo "*** COMPLETED in test/engine ***"
 
 clean:
-	rm -f *.txt [a-z] [a-z][a-z1-9] log *.log
+	rm -f *.txt [a-z] [a-z][a-z1-9] log *.log conf.json
 	@echo "*** CLEAN COMPLETE in test/engine ***"
 
 test:
