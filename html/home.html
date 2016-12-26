@@ -31,7 +31,7 @@ businesses.push(business);
 
 var pstyle = 'border: 1px solid #dfdfdf; padding: 0px;';
 var pstyle2 = 'border: 1px solid #cfcfcf; padding: 0px;';
-var prefmt = 'font-family: "Monaco", "Menlo", "Source Code Pro", monospace; white-space: pre; font-size: 8pt; background-color: white;';
+var prefmt = 'font-family: "Monaco", "Menlo", "Source Code Pro", monospace; white-space: pre; font-size: 9pt; background-color: white;';
 var stdfmt = 'font-family: "Open Sans","Roboto",sans-serif; font-size: 9pt; border-spacing:5px; padding: 5px; color: #777777'
 var config = {
     mainlayout: {
@@ -52,19 +52,19 @@ var config = {
         panels: [
             { type: 'top', hidden: true, size: 60, resizable: true, style: pstyle2, content: '<p align="center">**** Accord NEWS FLASH ****</p>'},
             { type: 'left', size: 200, style: pstyle2, resizable: true, content: 'sidebar' },
-            { type: 'main',  size: 100, style: pstyle2, content: 'toplayout - main' },
+            { type: 'main',  size: 100, style: pstyle2 },
             { type: 'preview', size: '50%', resizable: true, hidden: true, style: pstyle2, content: 'preview' },
-            { type: 'right', size: 200, resizable: true, style: pstyle2, content: 'detail' },
+            { type: 'right', size: 200, resizable: true, style: pstyle2, hidden: true },
             { type: 'bottom', size: 20, resizable: true, style: pstyle2, hidden: true, content: 'toplayout - bottom' }
         ]
     },
     reportslayout: {
         name: 'reportslayout',
-        padding: 1,
+        padding: 0,
         panels: [
             { type: 'top',size: 40, style: pstyle2, content: 'reports toolbar'},
-            { type: 'left', size: 200, hidden: true, content: 'sidebar' },
-            { type: 'main',  size: 100, style: prefmt, content: 'reports main window' },
+            { type: 'left', size: 20, style: prefmt, hidden: false },
+            { type: 'main',  size: 100, style: prefmt},
             { type: 'preview', size: '50%', resizable: true, hidden: true, content: 'reports preview' },
             { type: 'right', size: 200, resizable: true, hidden: true, content: 'reports - detail' },
             { type: 'bottom', size: 20, resizable: true, hidden: true, content: 'reports - bottom' }
@@ -84,6 +84,13 @@ var config = {
                 { text: 'RentRoll',           icon: 'fa fa-building-o' }, 
                 { text: 'Forms & Procedures', icon: 'fa fa-book' }, 
             ]},
+             { type: 'html',  id: 'BUD',
+                html: //'<div style="background-color: #eee; padding: 10px 5px; border-bottom: 1px solid silver">'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-building-o"></i> &nbsp;' + sBusinessUnit +
+                    ': <select name="BusinessSelect" onchange="ChangeBusiness()">'+
+                    '{{range .BL}}<option value="{{.BID}}">{{.Designation}}</option>{{end}}'+
+                    '</select>&nbsp;&nbsp;&nbsp;' //+ '</div>'
+            },
             { type: 'break', id: 'break2' },
             { type: 'menu',    id: 'menuButton', caption: 'Panels',    icon: 'fa fa-table', items: [
                 { text: 'Messages', icon: 'fa fa-folder-o' }, 
@@ -99,7 +106,7 @@ var config = {
             console.log('target = ' + event.target)
             switch(event.target) {
                 case "moduleMenu:Directory":      window.location.href = 'https://directory.airoller.com/'; break;
-                case "moduleMenu:RentRoll":       window.location.href = 'https://rentroll.airoller.com/';  break;
+                case "moduleMenu:RentRoll":       window.location.href = '/';                               break;
                 case "menuButton:Messages":       w2ui['toplayout'].toggle('top',true);                     break;
                 case "menuButton:Sidebar":        w2ui['toplayout'].toggle('left',true);                    break;
                 case "menuButton:mainLayoutMain": w2ui['mainlayout'].toggle('main',true);                   break;
@@ -112,10 +119,10 @@ var config = {
     },
     sidebarL1: {
         name: 'sidebarL1',
-        topHTML:  '<div style="background-color: #eee; padding: 10px 5px; border-bottom: 1px solid silver">&nbsp;&nbsp;&nbsp;'+
-                    '<i class="fa fa-building-o"></i> &nbsp;' + sBusinessUnit + ': <select name="BusinessSelect" onchange="ChangeBusiness()">'+
-                    '{{range .BL}}<option value="{{.BID}}">{{.Designation}}</option>{{end}}'+
-                    '</select>&nbsp;&nbsp;&nbsp;</div>',
+        // topHTML:  '<div style="background-color: #eee; padding: 10px 5px; border-bottom: 1px solid silver">&nbsp;&nbsp;&nbsp;'+
+        //             '<i class="fa fa-building-o"></i> &nbsp;' + sBusinessUnit + ': <select name="BusinessSelect" onchange="ChangeBusiness()">'+
+        //             '{{range .BL}}<option value="{{.BID}}">{{.Designation}}</option>{{end}}'+
+        //             '</select>&nbsp;&nbsp;&nbsp;</div>',
         //flatButton: true,
         nodes: [
             { id: 'main', text: 'Main', img: 'icon-folder', expanded: true, group: true,
@@ -130,41 +137,87 @@ var config = {
             },
             { id: 'reports', text: 'Reports', img: 'icon-folder', expanded: false, group: true,
                 nodes: [ 
-                       { id: 'assessments', text: 'Assessments', icon: 'fa fa-file-text-o' },
-                       { id: 'businessUnits', text: 'Business Units', icon: 'fa fa-file-text-o' },
-                       { id: 'chartOfAccounts', text: 'Chart Of Accounts', icon: 'fa fa-file-text-o' },
-                       { id: 'depositMethods', text: 'Deposit Methods', icon: 'fa fa-file-text-o' },
-                       { id: 'depositories', text: 'Depositories', icon: 'fa fa-file-text-o' },
-                       { id: 'delinquency', text: 'Delinquency', icon: 'fa fa-file-text-o' },
+                       { id: 'asm', text: 'Assessments', icon: 'fa fa-file-text-o' },
+                       { id: 'b', text: 'Business Units', icon: 'fa fa-file-text-o' },
+                       { id: 'coa', text: 'Chart Of Accounts', icon: 'fa fa-file-text-o' },
+                       { id: 'dpm', text: 'Deposit Methods', icon: 'fa fa-file-text-o' },
+                       { id: 'dep', text: 'Depositories', icon: 'fa fa-file-text-o' },
+                       { id: 'delinq', text: 'Delinquency', icon: 'fa fa-file-text-o' },
                        { id: 'gsr', text: 'GSR', icon: 'fa fa-file-text-o' },
-                       { id: 'journal', text: 'Journal', icon: 'fa fa-file-text-o' },
-                       { id: 'ledger', text: 'Ledger', icon: 'fa fa-file-text-o' },
-                       { id: 'ledgerActivity', text: 'Ledger Activity', icon: 'fa fa-file-text-o' },
+                       { id: 'j', text: 'Journal', icon: 'fa fa-file-text-o' },
+                       { id: 'l', text: 'Ledger', icon: 'fa fa-file-text-o' },
+                       { id: 'la', text: 'Ledger Activity', icon: 'fa fa-file-text-o' },
                        { id: 'people', text: 'People', icon: 'fa fa-file-text-o' },
-                       { id: 'paymentTypes', text: 'Payment Types', icon: 'fa fa-file-text-o' },
-                       { id: 'receipts', text: 'Receipts', icon: 'fa fa-file-text-o' },
-                       { id: 'countByRentable Type', text: 'Count By Rentable Type', icon: 'fa fa-file-text-o' },
-                       { id: 'rentablesReport', text: plural(sRentable), icon: 'fa fa-file-text-o' },
-                       { id: 'rentalAgreements', text: 'Rental Agreements', icon: 'fa fa-file-text-o' },
-                       { id: 'rentalAgreementTemplates', text: 'Rental Agreement Templates', icon: 'fa fa-file-text-o' },
-                       { id: 'rentableTypes', text: 'Rentable Types', icon: 'fa fa-file-text-o' },
-                       { id: 'rentrolls', text: 'RentRolls', icon: 'fa fa-file-text-o' },
+                       { id: 'pmt', text: 'Payment Types', icon: 'fa fa-file-text-o' },
+                       { id: 'rcpt', text: 'Receipts', icon: 'fa fa-file-text-o' },
+                       { id: 'rcbt', text: 'Rentable Type Counts', icon: 'fa fa-file-text-o' },
+                       { id: 'r', text: plural(sRentable), icon: 'fa fa-file-text-o' },
+                       { id: 'ra', text: 'Rental Agreements', icon: 'fa fa-file-text-o' },
+                       { id: 'rat', text: 'Rental Agreement Templates', icon: 'fa fa-file-text-o' },
+                       { id: 'rt', text: 'Rentable Types', icon: 'fa fa-file-text-o' },
+                       { id: 'rr', text: 'RentRoll', icon: 'fa fa-file-text-o' },
                        { id: 'statements', text: 'Statements', icon: 'fa fa-file-text-o' },
-                       { id: 'string Lists', text: 'String Lists', icon: 'fa fa-file-text-o' },
-                       { id: 'trial Balance', text: 'Trial Balance', icon: 'fa fa-file-text-o' },
+                       { id: 'sl', text: 'String Lists', icon: 'fa fa-file-text-o' },
+                       { id: 'tb', text: 'Trial Balance', icon: 'fa fa-file-text-o' },
                 ]
             },
             { id: 'admin', text: 'Admin', img: 'icon-wrench', expanded: false, group: true,
                 nodes: [ { id: 'accounts', text: 'Chart Of Accounts', icon: 'fa fa-folder-o' },
                 ]
             },
-       ],
+        ],
+        onExpand: function(event) {
+            var x = getCurrentBusiness();
+            //console.log('current biz = ' + x.value + '  name = ' + x.name );
+            switch (event.target) {
+                case 'reports':
+                    var w = w2ui['reportslayout']
+                    w2ui['toplayout'].content('main', w);
+                    w2ui['toplayout'].hide('right',true);
+                    break;
+            }
+
+        },
         onFlat: function (event) {
             console.log('event.goFlat = ' + event.goFlat )
             $('#sidebarL1').css('width', (event.goFlat ? '35px' : '200px'));
         },
         onClick: function (event) {
-            switchToGrid(event.target)
+            console.log('event.target = ' + event.target)
+            switch(event.target) {
+                case 'accounts':
+                case 'rentables':
+                case 'transactants':
+                    switchToGrid(event.target);
+                    break;
+                case 'asm':
+                case 'b':
+                case 'coa':
+                case 'delinq':
+                case 'dep':
+                case 'dpm':
+                case 'gsr':
+                case 'j':
+                case 'l':
+                case 'la':
+                case 'people':
+                case 'pmt':
+                case 'r':
+                case 'ra':
+                case 'rat':
+                case 'rcbt':  // rentable count by type
+                case 'rcpt':
+                case 'rr':
+                case 'rt':
+                case 'sl':
+                case 'statements':
+                case 'tb':
+                    showReport(event.target)
+                    break;
+
+                default:
+                    console.log('unhandled event: ' + event.target)
+            }
         }
     },
     reportstoolbar: {
@@ -190,15 +243,36 @@ var config = {
             },
             { type: 'button',  id: 'monthfwd', icon: 'fa fa-angle-right' },
             { type: 'button',  id: 'dayfwd', icon: 'fa fa-angle-double-right' },
-        ]
+        ],
+        onClick: function (event) {
+            console.log('event = ' + event)
+        }
     }
  
 }
 
+// function myEventHndlr() {
+//     var x = document.getElementsByName("dateD1")
+//     console.log(x[0].value)
+// }
+
 function showReport(rptname) {
-    w2ui['toplayout'].content('main', w2ui['reportslayout']);
-    w2ui['toplayout'].hide('right');
-    w2ui['reportslayout'].load('main', '/wsvc/' + rptname);
+    var w = w2ui['reportslayout']
+    var x = getCurrentBusiness();
+    var userid = 211;
+    var url = '/wsvc/' + userid + '/' + x.value + '?r=' + rptname
+    w2ui['toplayout'].content('main', w);
+    w2ui['toplayout'].hide('right',true);
+    var y = document.getElementsByName("dateD1")
+    var d = y[0].value
+    url += '&dtstart=' + d
+    console.log('d1 = ' + d)
+    y = document.getElementsByName("dateD2")
+    d = y[0].value
+    console.log('d2 = ' + d)
+    url += '&dtstop=' + d
+    console.log('url = ' + url);
+    w.load('main', url);
 }
 
 var accountsGrid = {
@@ -470,6 +544,7 @@ function getCurrentBusiness() {
     var x = document.getElementsByName("BusinessSelect");
     return x[0];
 }
+
 // urlPrefix returns the standard for values for the web services
 // url ending:  <userid>/<business id>
 function urlSuffix() {
@@ -479,7 +554,6 @@ function urlSuffix() {
 
 // ChangeBusiness updates the UI to the newly selected business
 function ChangeBusiness() {
-    var x =document.getElementsByName("BusinessSelect");
     w2ui['toplayout'].content('main', ' ');
     w2ui['toplayout'].hide('right',true);
     s = w2ui['sidebarL1'];
@@ -487,6 +561,10 @@ function ChangeBusiness() {
     if (sel != null) { 
         s.unselect(sel);
     }
+    w2ui['reportslayout'].url = ''
+    
+    s.collapse('reports');
+    s.collapse('admin');
 }
 
 function switchToGrid(svc) {

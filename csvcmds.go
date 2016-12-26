@@ -122,7 +122,11 @@ func CmdGenJnl(w http.ResponseWriter, r *http.Request, xbiz *rlib.XBusiness, ui 
 	rlib.GenerateRecurInstances(xbiz, &ui.D1, &ui.D2) // generate and process assessment instances in this range
 	rlib.ProcessReceiptRange(xbiz, &ui.D1, &ui.D2)    // process receipts in this range
 	ui.ReportContent += fmt.Sprintf("\nJournal\nBusiness:  %s  (%s)\nPeriod:  %s - %s\n\n", xbiz.P.Name, xbiz.P.Designation, ui.D1.Format(rlib.RRDATEFMT4), ui.D2.Format(rlib.RRDATEFMT4))
-	t := rrpt.JournalReport(xbiz, &ui.D1, &ui.D2)
+	var ri rcsv.CSVReporterInfo
+	ri.Xbiz = xbiz
+	ri.D1 = ui.D1
+	ri.D2 = ui.D2
+	t := rrpt.JournalReport(&ri)
 	ui.ReportContent += t.SprintTable(rlib.RPTTEXT)
 }
 
@@ -168,56 +172,12 @@ var loaders = []csvLoaderT{
 // {prefix: "RSP", handler: rcsv.LoadRentalSpecialtiesCSV},
 }
 
-func csvloadReporter(prefix string, xbiz *rlib.XBusiness, ui *RRuiSupport) string {
-	// fmt.Printf("csvloadReporter: prefix=%s, BID=%d\n", prefix, xbiz.P.BID)
-	var ri = rcsv.CSVReporterInfo{OutputFormat: rlib.RPTTEXT, Bid: xbiz.P.BID, D1: ui.D1, D2: ui.D2}
-
-	switch prefix {
-	case "ASM", "Assessments":
-		return rcsv.RRreportAssessments(&ri)
-	case "B", "Business":
-		return rcsv.RRreportBusiness(&ri)
-	case "COA", "Chart Of Accounts":
-		rlib.InitBizInternals(ri.Bid, xbiz)
-		return rcsv.RRreportChartOfAccounts(&ri)
-	case "C", "Custom Attributes":
-		return rcsv.RRreportCustomAttributes(&ri)
-	case "CR", "Custom Attribute Refs":
-		return rcsv.RRreportCustomAttributeRefs(&ri)
-	case "DPM", "Deposit Methods":
-		return rcsv.RRreportDepositMethods(&ri)
-	case "DEP", "Depositories":
-		return rcsv.RRreportDepository(&ri)
-	case "PMT", "Payment Types":
-		return rcsv.RRreportPaymentTypes(&ri)
-	case "R", "Rentables":
-		return rcsv.RRreportRentables(&ri)
-	case "RA", "Rental Agreements":
-		return rcsv.RRreportRentalAgreements(&ri)
-	case "RAT", "Rental Agreement Templates":
-		return rcsv.RRreportRentalAgreementTemplates(&ri)
-	case "RCPT", "Receipts":
-		return rcsv.RRreportReceipts(&ri)
-	case "RT", "Rentable Types":
-		return rcsv.RRreportRentableTypes(&ri)
-	case "Rentable Count By Type":
-		return rrpt.RentableCountByRentableTypeReport(ri.OutputFormat, xbiz, &ri.D1, &ri.D2)
-	case "SL", "String Lists":
-		return rcsv.RRreportStringLists(&ri)
-	case "Statements":
-		return rrpt.RptStatementTextReport(xbiz, &ri.D1, &ri.D2)
-	case "T", "People":
-		return rcsv.RRreportPeople(&ri)
-	}
-	return "unhandled loader type: " + prefix
-}
-
 // CmdSimpleReport returns the report output in ui.ReportContent for the provid
 func CmdSimpleReport(w http.ResponseWriter, r *http.Request, xbiz *rlib.XBusiness, ui *RRuiSupport) {
 	action := r.FormValue("action")
 	// fmt.Printf("Simple report:  xbiz.P.BID = %d, action = %s\n", xbiz.P.BID, action)
 	if xbiz.P.BID > 0 {
-		ui.ReportContent = csvloadReporter(action, xbiz, ui)
+		ui.ReportContent = websvcReportHandler(action, xbiz, ui)
 	}
 }
 
@@ -241,7 +201,7 @@ func CmdCSVLoad(w http.ResponseWriter, r *http.Request, xbiz *rlib.XBusiness, ui
 				if len(fname) > 0 {
 					rcsv.InitRCSV(&ui.D1, &ui.D2, xbiz)
 					ui.ReportContent = loaders[i].handler(path)
-					ui.ReportContent += csvloadReporter(loaders[i].prefix, xbiz, ui)
+					ui.ReportContent += websvcReportHandler(loaders[i].prefix, xbiz, ui)
 				}
 			}
 		}
